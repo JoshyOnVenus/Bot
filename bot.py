@@ -117,7 +117,7 @@ class Bot(commands.Bot):
     async def load_cogs(self) -> None:
         for file in os.listdir(f"{os.path.realpath(os.path.dirname(__file__))}/cogs"):
             if file.endswith(".py"):
-                extension = file[:3]
+                extension = file[:-3]
                 try:
                     await self.load_extension(f"cogs.{extension}")
                     self.logger.info(f"Loaded Extension: {extension}")

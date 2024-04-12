@@ -11,8 +11,6 @@ class Fun(commands.Cog, name = "fun"):
     def __init__(self, bot) -> None:
         self.bot = bot
 
-    # Here you can just add your own commands, you'll always need to provide "self" as first parameter.
-
     @commands.hybrid_command(name = "randomfact", description = "Get a random fact.")
     async def randomfact(self, context: Context) -> None:
         """
