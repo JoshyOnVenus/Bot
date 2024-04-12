@@ -1,4 +1,4 @@
-# Import Neccesary Libraries
+# Import Necessary Libraries
 import aiosqlite
 
 class DatabaseManager:

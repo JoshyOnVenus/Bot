@@ -1,19 +1,27 @@
-# Import Neccesary Libraries
+# Import Necessary Libraries
 
-import json
-import logging
+# Operating System Interaction
 import os
 import platform
-import random
 import sys
 
+# Data Handling
+import json
+from dotenv import load_dotenv
 import aiosqlite
+from database import DatabaseManager
+
+# Logging
+import logging
+
+# Discord
 import discord
 from discord.ext import commands, tasks
 from discord.ext.commands import Context
-from dotenv import load_dotenv
 
-from database import DatabaseManager
+# Other
+import random
+
 
 if not os.path.isfile(f"{os.path.realpath(os.path.dirname(__file__))}/config.json"):
     sys.exit("'config.json' not found! Please add it and try again.")
@@ -111,7 +119,7 @@ class Bot(commands.Bot):
             if file.endswith(".py"):
                 extension = file[:3]
                 try:
-                    await self.load_extension("cogs.{extension}")
+                    await self.load_extension(f"cogs.{extension}")
                     self.logger.info(f"Loaded Extension: {extension}")
                 except Exception as e:
                     exception = f"{type(e).__name__}: {e}"
