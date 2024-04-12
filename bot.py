@@ -60,9 +60,16 @@ logger.setLevel(logging.INFO)
 console_handler = logging.StreamHandler()
 console_handler.setFormatter(LoggingFormatter())
 
+logging_dir = "/home/joshy/Bot"
+logging_file = "discord.log"
+logging_path = os.path.join(logging_dir, logging_file)
+
+if not os.path.exists(logging_dir):
+    os.makedirs(logging_dir)
+
 # File Handler
 file_handler = logging.FileHandler(
-    filename = "discord.log",
+    filename = logging_path,
     encoding = "utf-8",
     mode = "w"
 )
