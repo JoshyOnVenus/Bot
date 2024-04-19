@@ -150,7 +150,7 @@ class Fun(commands.Cog, name = "fun"):
         :param context: The hybrid command context.
         """
         
-        async with aiohttp.ClientSession(headers = {"x-api-key": "live_1qyjLB580dSinDhyCuq9ZDz3xx5HNyKDqjgwoYKxZSILiMto2z3TMbwsGqPgODTu"} ) as session:
+        async with aiohttp.ClientSession(headers = {"x-api-key": f"{self.bot.config['CAT_API_key']}"} ) as session:
             async with session.get("https://api.thecatapi.com/v1/images/search") as request:
                 if request.status == 200:
                     data = await request.json()
@@ -173,7 +173,7 @@ class Fun(commands.Cog, name = "fun"):
         :param context: The hybrid command context.
         """
         
-        async with aiohttp.ClientSession(headers = {"x-api-key": "live_ne7Wajr1TkpFV0yCvUmx55C0OmW5t0UOjCX2lHyW7xGhOYt4YgE1Kmd7GN0O1teQ"} ) as session:
+        async with aiohttp.ClientSession(headers = {"x-api-key": f"{self.bot.config['DOG_API_key']}"} ) as session:
             async with session.get("https://api.thedogapi.com/v1/images/search") as request:
                 if request.status == 200:
                     data = await request.json()
@@ -197,7 +197,7 @@ class Fun(commands.Cog, name = "fun"):
         """
         
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"https://api.openweathermap.org/data/2.5/weather?q={location}&appid=0e8e390e52fe1c6a5dd618ebda90bfb5&units=metric") as request:
+            async with session.get(f"https://api.openweathermap.org/data/2.5/weather?q={location}&appid={self.bot.config['WEATHER_API_key']}&units=metric") as request:
                 try:
                     data = await request.json()
                     embed = discord.Embed(
