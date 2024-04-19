@@ -13,6 +13,7 @@ from database import DatabaseManager
 
 # Logging
 import logging
+from utils import LoggingFormatter, Color
 
 # Discord
 import discord
@@ -32,38 +33,6 @@ else:
 intents = discord.Intents.default()
 
 intents.message_content = True
-
-class LoggingFormatter(logging.Formatter):
-    
-    # Colors
-    black = "\x1b[30m"
-    red = "\x1b[31m"
-    green = "\x1b[32m"
-    yellow = "\x1b[33m"
-    blue = "\x1b[34m"
-    gray = "\x1b[38m"
-    
-    # Styles
-    reset = "\x1b[0m"
-    bold = "\x1b[1m"
-
-    COLORS = {
-        logging.DEBUG: gray + bold,
-        logging.INFO: blue + bold,
-        logging.WARNING: yellow + bold,
-        logging.ERROR: red,
-        logging.CRITICAL: red + bold
-    }
-
-    def format(self, record):
-        log_color = self.COLORS[record.levelno]
-        format = "(black)[{asctime}](reset) (levelcolor)[{levelname:<8}](reset) (green){name}:(reset) {message}"
-        format = format.replace("(black)", self.black + self.bold)
-        format = format.replace("(reset)", self.reset)
-        format = format.replace("(levelcolor)", log_color)
-        format = format.replace("(green)", self.green + self.bold)
-        formatter = logging.Formatter(format, "%Y-%m-%d %H:%M:%S", style="{")
-        return formatter.format(record)
 
 logger = logging.getLogger("discord_bot")
 logger.setLevel(logging.INFO)
@@ -121,12 +90,14 @@ class Bot(commands.Bot):
                 try:
                     await self.load_extension(f"cogs.{extension}")
                     self.logger.info(f"Loaded Extension: {extension}")
+                    self.logger.info(f"     - {', '.join([command.name for command in self.get_cog(extension).walk_commands()])}")
                 except Exception as e:
                     exception = f"{type(e).__name__}: {e}"
-                    self.logger.error(f"Failed To Loaded Extension: {extension}\n{exception}")
+                    self.logger.error(f"Failed To Load Extension: {extension}\n{exception}")
+                    
     @tasks.loop(minutes=1.0)
     async def status_task(self) -> None:
-        statuses = ["SpaceX", "TFRs", "you!"]
+        statuses = ["SpaceX", "TFRs", "with you!"]
         await self.change_presence(activity=discord.Game(random.choice(statuses)))
 
     @status_task.before_loop
@@ -167,13 +138,13 @@ class Bot(commands.Bot):
             hours = hours % 24
             embed = discord.Embed(
                 description = f"**Please Slow Down!** - You can use this command again in {f'{round(hours)} hours' if round(hours) > 0 else ''} {f'{round(minutes)} minutes' if round(minutes) > 0 else ''} {f'{round(seconds)} seconds' if round(seconds) > 0 else ''}.",
-                color = 0xE02B2B
+                color = Color.RED
             )
-            await context.send(embed = embed)
+            await context.send(embed = embed, ephemeral = True)
         elif isinstance(error, commands.NotOwner):
             embed = discord.Embed(
                 description = "You are not the owner of this bot!",
-                color = 0xE02B2B
+                color = Color.RED
             )
             await context.send(embed = embed)
 
@@ -184,13 +155,13 @@ class Bot(commands.Bot):
         elif isinstance(error, commands.MissingPermissions):
             embed = discord.Embed(
                 description = "You are missing the permission(s) `" + ", ".join(error.missing_permissions) + "` to execute this command!",
-                color = 0xE02B2B
+                color = Color.RED
             )
             await context.send(embed = embed)
         elif isinstance(error, commands.BotMissingPermissions):
             embed = discord.Embed(
                 description = "I am missing the permission(s) `" + ", ".join(error.missing_permissions) + "` to fully perform this command!",
-                color = 0xE02B2B
+                color = Color.RED
             )
             await context.send(embed = embed)
         else:
